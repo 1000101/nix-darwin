@@ -114,6 +114,7 @@ let
     tests.services-activate-system-changed-label-prefix = makeTest ./tests/services-activate-system-changed-label-prefix.nix;
     tests.services-buildkite-agent = makeTest ./tests/services-buildkite-agent.nix;
     tests.services-gitlab-runner = makeTest ./tests/services-gitlab-runner.nix;
+    tests.services-lorri = makeTest ./tests/services-lorri.nix;
     tests.services-nix-daemon = makeTest ./tests/services-nix-daemon.nix;
     tests.sockets-nix-daemon = makeTest ./tests/sockets-nix-daemon.nix;
     tests.services-dnsmasq = makeTest ./tests/services-dnsmasq.nix;

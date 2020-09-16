@@ -1,10 +1,16 @@
-{ stdenv, writeScript, nix, pkgs }:
+{ stdenv, writeScript, nix, pkgs, nix-darwin }:
 
 let
+  configuration = builtins.path {
+    name = "nix-darwin-installer-configuration";
+    path = ./.;
+    filter = name: _type: name != toString ./default.nix;
+  };
+
   nixPath = stdenv.lib.concatStringsSep ":" [
-    "darwin-config=${toString ./configuration.nix}"
-    "darwin=${toString ../..}"
-    "nixpkgs=${toString pkgs.path}"
+    "darwin-config=${configuration}/configuration.nix"
+    "darwin=${nix-darwin}"
+    "nixpkgs=${pkgs.path}"
     "$HOME/.nix-defexpr/channels"
     "/nix/var/nix/profiles/per-user/root/channels"
     "$NIX_PATH"
@@ -52,7 +58,7 @@ stdenv.mkDerivation {
     if ! test -f "$config"; then
         echo "copying example configuration.nix" >&2
         mkdir -p "$HOME/.nixpkgs"
-        cp "${toString ../../modules/examples/simple.nix}" "$config"
+        cp "${../../modules/examples/simple.nix}" "$config"
         chmod u+w "$config"
 
         # Enable nix-daemon service for multi-user installs.
@@ -64,7 +70,7 @@ stdenv.mkDerivation {
     # Skip when stdin is not a tty, eg.
     # $ yes | darwin-installer
     if test -t 0; then
-        read -p "Would you like edit the default configuration.nix before starting? [y/n] " i
+        read -p "Would you like to edit the default configuration.nix before starting? [y/n] " i
         case "$i" in
             y|Y)
                 PATH=$_PATH ''${EDITOR:-nano} "$config"
